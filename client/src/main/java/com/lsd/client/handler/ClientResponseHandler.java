@@ -1,25 +1,19 @@
 package com.lsd.client.handler;
 
-import com.lsd.client.connect.ClientConnect;
-import com.lsd.client.constant.ConstantInfo;
+import com.lsd.client.connect.ClientChannel;
 import com.lsd.common.constant.MessageConstant;
 import com.lsd.common.domain.MessageBody;
-import com.lsd.common.domain.MessageEnum;
-import com.lsd.common.domain.MessageResponse;
 import com.lsd.common.factory.JsonSerializerFactory;
-import com.lsd.common.serializer.Serializer;
 import com.lsd.common.serializer.impl.JsonSerializer;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 
-import java.net.NetworkInterface;
-
 public class ClientResponseHandler extends SimpleChannelInboundHandler<String> {
+    private final JsonSerializer serializer = (JsonSerializer) JsonSerializerFactory.instance();
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, String msg) throws Exception {
-        JsonSerializer instance = (JsonSerializer) JsonSerializerFactory.instance();
-        MessageBody messageBody = instance.stringToObj(msg,MessageBody.class);
+        MessageBody messageBody = serializer.stringToObj(msg,MessageBody.class);
         if (MessageConstant.RESPONSE == messageBody.getMessageType())
         {
             System.out.println(msg);
@@ -31,10 +25,16 @@ public class ClientResponseHandler extends SimpleChannelInboundHandler<String> {
 
     @Override
     public void channelRegistered(ChannelHandlerContext ctx) throws Exception {
-        ClientConnect.channel(ctx.channel());
+        ClientChannel.channel(ctx.channel());
     }
     @Override
     public void channelUnregistered(ChannelHandlerContext ctx) throws Exception {
         ctx.channel().close();
+    }
+
+    @Override
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+        ctx.channel().close();
+        ClientChannel.channel(null);
     }
 }

@@ -1,43 +1,96 @@
 package com.lsd.client.connect;
 
+import com.lsd.client.init.ClientChannelInitializer;
+import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
+import io.netty.channel.EventLoopGroup;
+import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.channel.socket.nio.NioSocketChannel;
+
+import java.util.Objects;
+
 
 /**
  * @program:botremote
  * @Author:liushengdong
  * @Description:
- * @Date:Created in 2019-08-17 09:44
+ * @Date:Created in 2019-08-17 14:11
  * @Modified By:
  */
-public class ClientConnect {
-    private ChannelCurrent channelCurrent= new ChannelCurrent();
+public class ClientConnect implements Runnable{
 
-    private ClientConnect(){}
+    private final EventLoopGroup eventLoopGroup = new NioEventLoopGroup(1);
 
-    public static Channel channel(){return ConnectHolder.channel.getChannel();}
+    private Bootstrap bootstrap;
 
-    public static Channel channel(Channel channel){ return ConnectHolder.channel.setChannel(channel); }
+    private Channel channel;
 
-    private ChannelCurrent getChannelCurrent() { return channelCurrent; }
+    private String address;
 
-    private static final class ConnectHolder{
-        private static final ChannelCurrent channel = newChannelCurrent();
+    private int port;
+
+
+
+    public ClientConnect(){
+
+    }
+    public ClientConnect(String address,int port){
+        this.address = address;
+        this.port = port;
     }
 
-    private static ChannelCurrent newChannelCurrent(){
-        return new ClientConnect().getChannelCurrent();
+    public Channel connect(String address,int port) throws InterruptedException {
+        return this.connect(address,port,false);
     }
 
-    private class ChannelCurrent{
-        private Channel channel;
-
-        public Channel getChannel() {
-            return channel;
+    public Channel connect(String address, int port,boolean isReConnect) throws InterruptedException {
+        try{
+            if(!isReConnect){
+                bootstrap = new Bootstrap();
+                bootstrap.group(eventLoopGroup).channel(NioSocketChannel.class).handler(new ClientChannelInitializer());
+                this.channel = bootstrap.connect(address, port).sync().channel();
+                return ClientChannel.channel(channel);
+            }else {
+                System.out.println("re connect ing ......");
+                ClientChannel.channel().close();
+                bootstrap = new Bootstrap();
+                bootstrap.group(eventLoopGroup).channel(NioSocketChannel.class).handler(new ClientChannelInitializer());
+                this.channel = bootstrap.connect(address, port).sync().channel();
+                return ClientChannel.channel(channel);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            return null;
         }
 
-        public Channel setChannel(Channel channel) {
-            this.channel = channel;
-            return this.channel;
+    }
+
+    @Override
+    public void run() {
+        Objects.requireNonNull(address);
+        Objects.requireNonNull(port);
+        try {
+            this.connect(address,port);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
+    }
+
+    public int getPort() {
+        return port;
+    }
+
+    public ClientConnect setPort(int port) {
+        this.port = port;
+        return this;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public ClientConnect setAddress(String address) {
+        this.address = address;
+        return this;
     }
 }

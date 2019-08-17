@@ -25,11 +25,10 @@ import static com.lsd.common.domain.MessageEnum.*;
  * @Modified By:
  */
 public class PassHandler extends SimpleChannelInboundHandler<String> {
-
+    private final JsonSerializer serializer = (JsonSerializer) JsonSerializerFactory.instance();
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, String msg) throws Exception {
 
-        JsonSerializer serializer = (JsonSerializer) JsonSerializerFactory.instance();
         System.out.println(msg);
         MessageBody messageBody = serializer.stringToObj(msg,MessageBody.class);
 

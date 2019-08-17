@@ -6,6 +6,7 @@ import com.lsd.common.domain.MessageResponse;
 import com.lsd.server.handler.PassHandler;
 import com.lsd.common.rpc.JsonDecoder;
 import com.lsd.common.rpc.JsonEncoder;
+import com.lsd.server.handler.ServerTimeOutHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
@@ -30,13 +31,11 @@ public class ServerChannelInitializer extends ChannelInitializer<SocketChannel> 
     @Override
     protected void initChannel(SocketChannel ch) throws Exception {
         ChannelPipeline pipeline = ch.pipeline();
-        //pipeline.addLast(new LengthFieldBasedFrameDecoder(8096,4,4));
+
         pipeline.addLast(new StringDecoder(Charset.forName("utf-8")));
         pipeline.addLast(new StringEncoder(Charset.forName("utf-8")));
         pipeline.addLast(new IdleStateHandler(60,60,120, TimeUnit.SECONDS));
-
-
-
+        pipeline.addLast(new ServerTimeOutHandler());
         pipeline.addLast(new PassHandler());
     }
 
