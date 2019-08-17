@@ -1,4 +1,4 @@
-package com.lsd.server.rpc;
+package com.lsd.common.rpc;
 
 import com.lsd.common.factory.JsonSerializerFactory;
 import io.netty.buffer.ByteBuf;

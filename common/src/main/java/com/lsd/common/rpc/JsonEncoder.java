@@ -1,10 +1,11 @@
-package com.lsd.server.rpc;
+package com.lsd.common.rpc;
 
 import com.lsd.common.factory.JsonSerializerFactory;
+import com.lsd.common.serializer.impl.JsonSerializer;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;
-import com.lsd.common.serializer.impl.JsonSerializer;
+
 /**
  * @program:botremote
  * @Author:liushengdong
