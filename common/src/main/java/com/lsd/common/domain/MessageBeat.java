@@ -1,9 +1,7 @@
 package com.lsd.common.domain;
 
-import com.sun.xml.internal.ws.wsdl.writer.document.Message;
 
 import java.io.Serializable;
-import java.text.DateFormat;
 import java.util.Date;
 
 public class MessageBeat implements Serializable, IMessage {
