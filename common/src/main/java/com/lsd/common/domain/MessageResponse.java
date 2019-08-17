@@ -9,11 +9,10 @@ import java.io.Serializable;
  * @Date:Created in 2019-08-16 15:22
  * @Modified By:
  */
-public class MessageResponse implements Serializable {
+public class MessageResponse implements Serializable,IMessage{
     private static final long serialVersionUID = 8878462380468390558L;
 
     private boolean isPass;
-
 
     public boolean isPass() {
         return isPass;

@@ -9,7 +9,7 @@ import java.io.Serializable;
  * @Date:Created in 2019-08-16 15:07
  * @Modified By:
  */
-public class MessageRequest implements Serializable {
+public class MessageRequest implements Serializable,IMessage{
     private static final long serialVersionUID = -679031726652245379L;
     private String macAddress;
 

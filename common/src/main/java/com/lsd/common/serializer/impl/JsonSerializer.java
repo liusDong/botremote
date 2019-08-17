@@ -1,7 +1,10 @@
 package com.lsd.common.serializer.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.lsd.common.serializer.Serializer;
+
+import java.nio.charset.Charset;
 
 /**
  * @program:botremote
@@ -18,4 +21,16 @@ public class JsonSerializer implements Serializer {
     public <T> T deserializer(byte[] bytes, Class<T> clazz) {
         return JSON.parseObject(bytes,clazz);
     }
+
+    public String objToString(Object object){
+        //int features=SerializerFeature.config(JSON.DEFAULT_GENERATE_FEATURE, SerializerFeature.WriteEnumUsingName, false);
+        //obj,features,SerializerFeature.EMPTY;
+        return JSON.toJSONString(object);}
+
+    public <T> T stringToObj(String str,Class<T> clazz){
+
+
+        return JSON.parseObject(str).toJavaObject(clazz);};
+
+
 }
