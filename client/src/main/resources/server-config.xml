@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- 第一种逆向工程xml配置 -->
+<configuration>
+    <ip>47.103.115.67</ip>
+    <port>8899</port>
+</configuration>
+
+

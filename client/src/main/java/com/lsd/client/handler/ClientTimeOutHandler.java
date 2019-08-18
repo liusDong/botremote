@@ -1,6 +1,7 @@
 package com.lsd.client.handler;
 
 import com.lsd.client.connect.ClientConnect;
+import com.lsd.client.constant.ServerConfig;
 import com.lsd.common.constant.MessageConstant;
 import com.lsd.common.domain.MessageBeat;
 import com.lsd.common.domain.MessageBody;
@@ -10,6 +11,8 @@ import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.handler.timeout.IdleStateEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
 import java.util.Date;
@@ -24,6 +27,7 @@ import java.util.Date;
 public class ClientTimeOutHandler extends ChannelInboundHandlerAdapter {
     JsonSerializer serializer = (JsonSerializer) JsonSerializerFactory.instance();
 
+    Logger logger = LoggerFactory.getLogger(ClientTimeOutHandler.class);
     @Override
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
         if(evt instanceof IdleStateEvent){
@@ -32,12 +36,14 @@ public class ClientTimeOutHandler extends ChannelInboundHandlerAdapter {
             MessageBeat messageBeat = new MessageBeat();
             messageBeat.setDate(new Date());
             messageBody.setMessage(messageBeat);
-            System.out.println("发现读写超时，需要确认心跳");
+
+            logger.info("发现读写超时，需要确认心跳");
+
             ctx.writeAndFlush(serializer.objToString(messageBody)).addListener(future -> {
                 if(future.isSuccess()){
-                    System.out.println("心跳发送成功，不需要重连");
+                    logger.info("心跳发送成功，不需要重连");
                 }else{
-                    new ClientConnect().connect("localhost",8899,true);
+                    new ClientConnect().connect(ServerConfig.IP,ServerConfig.PORT,true);
                 }
             });
         }else

@@ -7,18 +7,22 @@ import com.lsd.common.factory.JsonSerializerFactory;
 import com.lsd.common.serializer.impl.JsonSerializer;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ClientResponseHandler extends SimpleChannelInboundHandler<String> {
     private final JsonSerializer serializer = (JsonSerializer) JsonSerializerFactory.instance();
 
+    Logger logger = LoggerFactory.getLogger(ClientResponseHandler.class);
+
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, String msg) throws Exception {
         MessageBody messageBody = serializer.stringToObj(msg,MessageBody.class);
-        if (MessageConstant.RESPONSE == messageBody.getMessageType())
+        if (MessageConstant.RESPONSE .equals( messageBody.getMessageType()))
         {
-            System.out.println(msg);
-        }else if(MessageConstant.BEAT == messageBody.getMessageType()){
-            System.out.println(msg);
+            logger.info(msg);
+        }else if(MessageConstant.BEAT .equals( messageBody.getMessageType())){
+            logger.info(msg);
         }
 
     }

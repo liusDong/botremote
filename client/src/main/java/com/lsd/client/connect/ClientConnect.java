@@ -6,6 +6,8 @@ import io.netty.channel.Channel;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Objects;
 
@@ -29,7 +31,7 @@ public class ClientConnect implements Runnable{
 
     private int port;
 
-
+    Logger logger = LoggerFactory.getLogger(ClientConnect.class);
 
     public ClientConnect(){
 
@@ -46,12 +48,13 @@ public class ClientConnect implements Runnable{
     public Channel connect(String address, int port,boolean isReConnect) throws InterruptedException {
         try{
             if(!isReConnect){
+                logger.info("connect");
                 bootstrap = new Bootstrap();
                 bootstrap.group(eventLoopGroup).channel(NioSocketChannel.class).handler(new ClientChannelInitializer());
                 this.channel = bootstrap.connect(address, port).sync().channel();
                 return ClientChannel.channel(channel);
             }else {
-                System.out.println("re connect ing ......");
+                logger.info("re connect ing ......");
                 ClientChannel.channel().close();
                 bootstrap = new Bootstrap();
                 bootstrap.group(eventLoopGroup).channel(NioSocketChannel.class).handler(new ClientChannelInitializer());

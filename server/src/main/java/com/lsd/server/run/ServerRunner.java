@@ -63,13 +63,7 @@ public class ServerRunner implements Runnable {
 
     public static void main(String[] args) throws InterruptedException {
         new Thread(new ServerRunner()).start();
-//        while (true){
-//            System.out.println("channelGroup size:"+channelGroup.size());
-//            System.out.println("send to client");
-//            //System.out.println("channelGroup size:"+channelGroup.size());
-//            channelGroup.writeAndFlush("hello client");
-//            TimeUnit.SECONDS.sleep(2);
-//        }
+
     }
 
 }

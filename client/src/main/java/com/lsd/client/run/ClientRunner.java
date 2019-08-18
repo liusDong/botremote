@@ -3,19 +3,22 @@ package com.lsd.client.run;
 import com.lsd.client.connect.ClientChannel;
 import com.lsd.client.connect.ClientConnect;
 import com.lsd.client.constant.ConstantInfo;
+import com.lsd.client.constant.ServerConfig;
 import com.lsd.client.init.ClientChannelInitializer;
 import com.lsd.common.constant.MessageConstant;
 import com.lsd.common.domain.MessageBody;
 import com.lsd.common.domain.MessageRequest;
 import com.lsd.common.factory.JsonSerializerFactory;
 import com.lsd.common.serializer.impl.JsonSerializer;
-import com.sun.security.ntlm.Client;
+
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.net.ConnectException;
 import java.net.SocketException;
@@ -30,12 +33,12 @@ import java.util.concurrent.TimeUnit;
  * @Modified By:
  */
 public class ClientRunner{
-
+    private static Logger logger = LoggerFactory.getLogger(ClientRunner.class);
 
     public static void main(String[] args) throws InterruptedException, UnknownHostException, SocketException {
 
         ClientConnect clientConnect = new ClientConnect();
-        clientConnect.setAddress("localhost").setPort(8899);
+        clientConnect.setAddress(ServerConfig.IP).setPort(ServerConfig.PORT);
 
         new Thread(clientConnect).start();
 
@@ -50,13 +53,12 @@ public class ClientRunner{
         while (true){
             if(ClientChannel.channel() !=null && ClientChannel.channel().isRegistered()){
                 Channel channel = ClientChannel.channel();
-                //System.out.println(instance.objToString(messageBody));
-                //channel.writeAndFlush(instance.objToString(messageBody));
+                channel.writeAndFlush(instance.objToString(messageBody));
                 TimeUnit.SECONDS.sleep(2);
             }else {
-                System.out.println("尝试重新连接服务器");
+                logger.info("尝试重新连接服务器");
                 ClientConnect clientConnect1 = new ClientConnect();
-                clientConnect1.connect("localhost",8899);
+                clientConnect1.connect(ServerConfig.IP,ServerConfig.PORT);
                 TimeUnit.SECONDS.sleep(30);
             }
 

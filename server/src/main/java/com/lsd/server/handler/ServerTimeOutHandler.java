@@ -9,6 +9,8 @@ import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.handler.timeout.IdleStateEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Date;
 
@@ -23,6 +25,7 @@ public class ServerTimeOutHandler extends ChannelInboundHandlerAdapter {
 
     private final JsonSerializer serializer= (JsonSerializer) JsonSerializerFactory.instance();
 
+    Logger logger = LoggerFactory.getLogger(ServerTimeOutHandler.class);
 
     @Override
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
@@ -32,6 +35,9 @@ public class ServerTimeOutHandler extends ChannelInboundHandlerAdapter {
             MessageBeat messageBeat = new MessageBeat();
             messageBeat.setDate(new Date());
             messageBody.setMessage(messageBeat);
+
+            logger.info(ctx.channel().remoteAddress()+" was disconnect to the server");
+
             ctx.writeAndFlush(serializer.objToString(messageBody)).addListener(ChannelFutureListener.CLOSE_ON_FAILURE);
 
         }else
