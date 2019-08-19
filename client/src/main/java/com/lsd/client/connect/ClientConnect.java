@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 
 /**
@@ -41,29 +42,30 @@ public class ClientConnect implements Runnable{
         this.port = port;
     }
 
-    public Channel connect(String address,int port) throws InterruptedException {
-        return this.connect(address,port,false);
+    public void connect(String address,int port) throws InterruptedException {
+         this.connect(address,port,false);
     }
 
-    public Channel connect(String address, int port,boolean isReConnect) throws InterruptedException {
+    public void connect(String address, int port,boolean isReConnect) throws InterruptedException {
         try{
             if(!isReConnect){
                 logger.info("connect");
                 bootstrap = new Bootstrap();
                 bootstrap.group(eventLoopGroup).channel(NioSocketChannel.class).handler(new ClientChannelInitializer());
                 this.channel = bootstrap.connect(address, port).sync().channel();
-                return ClientChannel.channel(channel);
             }else {
                 logger.info("re connect ing ......");
-                //ClientChannel.channel().close();
+
+                if(null != ClientChannel.channel()){
+                    ClientChannel.channel().close().sync();
+                }
                 bootstrap = new Bootstrap();
                 bootstrap.group(eventLoopGroup).channel(NioSocketChannel.class).handler(new ClientChannelInitializer());
                 this.channel = bootstrap.connect(address, port).sync().channel();
-                return ClientChannel.channel(channel);
             }
         }catch (Exception e){
-            e.printStackTrace();
-            return null;
+            logger.info("网络异常，请检查网络是否正常");
+            TimeUnit.SECONDS.sleep(20);
         }
 
     }

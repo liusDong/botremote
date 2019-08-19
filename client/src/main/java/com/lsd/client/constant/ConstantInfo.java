@@ -12,4 +12,5 @@ import com.lsd.client.util.CPUUtil;
 public class ConstantInfo {
     public static final String CPU_ID = CPUUtil.getIdentifierByWindows();
 
+    public static final int RESET_TIME = 15;
 }
