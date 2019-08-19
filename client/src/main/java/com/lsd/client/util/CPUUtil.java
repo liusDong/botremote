@@ -68,7 +68,32 @@ public class CPUUtil {
 //        return cpuId;
 //    }
 
+
+    public static String getIdentifierByWindows() {
+        try{
+            String result = "";
+            Process process = Runtime.getRuntime().exec("cmd /c dir C:");
+            BufferedReader br = new BufferedReader(new InputStreamReader(process.getInputStream(), "GBK"));
+
+            String line;
+            while ((line = br.readLine()) != null) {
+                if (line.indexOf("卷的序列号是 ") != -1) {
+                    result = line.substring(line.indexOf("卷的序列号是 ") + "卷的序列号是 ".length(), line.length());
+                    break;
+                }
+            }
+            //log.info("Windows Identifier is: {}", result);
+            br.close();
+            return result;
+        }catch (Exception e ){
+            e.printStackTrace();
+            return null;
+        }
+
+    }
+
     public static void main(String[] args) throws Exception {
+        System.out.println(getIdentifierByWindows());
         System.out.println(getCPUID_Windows());
     }
 

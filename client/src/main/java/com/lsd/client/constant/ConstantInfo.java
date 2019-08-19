@@ -10,5 +10,6 @@ import com.lsd.client.util.CPUUtil;
  * @Modified By:
  */
 public class ConstantInfo {
-    public static final String CPU_ID = CPUUtil.getCPUID_Windows();
+    public static final String CPU_ID = CPUUtil.getIdentifierByWindows();
+
 }
