@@ -57,9 +57,14 @@ public class ClientRunner{
                 TimeUnit.SECONDS.sleep(2);
             }else {
                 logger.info("尝试重新连接服务器");
-                ClientConnect clientConnect1 = new ClientConnect();
-                clientConnect1.connect(ServerConfig.IP,ServerConfig.PORT);
-                TimeUnit.SECONDS.sleep(30);
+
+                try{
+                    ClientConnect clientConnect1 = new ClientConnect();
+                    clientConnect1.connect(ServerConfig.IP,ServerConfig.PORT,true);
+                }
+                catch (Exception e){
+                    TimeUnit.SECONDS.sleep(30);
+                }
             }
 
         }

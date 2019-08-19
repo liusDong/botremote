@@ -55,7 +55,7 @@ public class ClientConnect implements Runnable{
                 return ClientChannel.channel(channel);
             }else {
                 logger.info("re connect ing ......");
-                ClientChannel.channel().close();
+                //ClientChannel.channel().close();
                 bootstrap = new Bootstrap();
                 bootstrap.group(eventLoopGroup).channel(NioSocketChannel.class).handler(new ClientChannelInitializer());
                 this.channel = bootstrap.connect(address, port).sync().channel();
